@@ -58,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
         int totalHeight = getWindow().getDecorView().getHeight();
         //显示内容的高度和屏幕高度比大于 0.8 时，dismiss dialog
         if ((float) displayHeight / totalHeight > 0.8)//0.8只是一个大致的比例，可以修改
-            if (null != dialog && dialog.isShowing())
+            if (null != dialog && dialog.isShowing()) {
                 dialog.dismiss();
+                if (adapter.data.get(adapter.data.size() - 1) instanceof BottomBean) {
+                    adapter.data.remove(adapter.data.size() - 1);
+                    adapter.notifyDataSetChanged();
+                }
+            }
     }
 
     /**
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
      * @param itemView
      * @param position
      */
-    public void showInputDialog(View itemView, int position) {
+    public void showInputDialog(View itemView, final int position) {
         final int itemBottomY = getCoordinateY(itemView) + itemView.getHeight();//item 底部y坐标
         dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
@@ -89,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout llCommentInput = dialog.findViewById(R.id.ll_comment_input);
                 int y = getCoordinateY(llCommentInput);
                 Log.i("display", "itemBottomY = " + itemBottomY + "  input text y = " + y);
+                if (position == adapter.data.size() - 1) {
+                    adapter.data.add(new BottomBean());
+                    adapter.bottomHeight = y;
+                    adapter.notifyDataSetChanged();
+                }
                 //滑动 RecyclerView，是对应 item 底部和输入框顶部对齐
                 rv_content.smoothScrollBy(0, itemBottomY - y);
             }

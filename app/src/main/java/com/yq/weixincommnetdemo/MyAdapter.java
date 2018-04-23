@@ -19,9 +19,12 @@ public class MyAdapter extends Adapter {
 
     public static final int TYPE_TOP = 0;
     public static final int TYPE_NORMAL = 1;
+    public static final int TYPE_BOTTOM = 2;
+
+    int bottomHeight;
 
     private Context mContext;
-    private List data = new ArrayList();
+    List data = new ArrayList();
 
     public MyAdapter(Context mContext) {
         this.mContext = mContext;
@@ -44,8 +47,10 @@ public class MyAdapter extends Adapter {
     public int getItemViewType(int position) {
         if (data.get(position) instanceof TopBean)
             return TYPE_TOP;
-        else
+        else if (data.get(position) instanceof NormalBean)
             return TYPE_NORMAL;
+        else
+            return TYPE_BOTTOM;
     }
 
     @Override
@@ -58,6 +63,11 @@ public class MyAdapter extends Adapter {
             case TYPE_NORMAL:
                 view = LayoutInflater.from(mContext).inflate(R.layout.item_normal, parent, false);
                 return new NormalViewHolder(view);
+            case TYPE_BOTTOM:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_bottom, parent, false);
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                layoutParams.height = bottomHeight;
+                return new BottomHolder(view);
         }
         return null;
     }
@@ -96,6 +106,14 @@ public class MyAdapter extends Adapter {
                     ((MainActivity) mContext).showInputDialog(itemView, getAdapterPosition());
                 }
             });
+        }
+    }
+
+    private class BottomHolder extends RecyclerView.ViewHolder {
+        TextView tv_msg;
+
+        public BottomHolder(final View itemView) {
+            super(itemView);
         }
     }
 
