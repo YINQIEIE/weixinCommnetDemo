@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if ((float) displayHeight / totalHeight > 0.8)//0.8只是一个大致的比例，可以修改
             if (null != dialog && dialog.isShowing()) {
                 dialog.dismiss();
+                //如果添加了空白 item ，移除空白 item
                 if (adapter.data.get(adapter.data.size() - 1) instanceof BottomBean) {
                     adapter.data.remove(adapter.data.size() - 1);
                     adapter.notifyDataSetChanged();
@@ -94,9 +95,10 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout llCommentInput = dialog.findViewById(R.id.ll_comment_input);
                 int y = getCoordinateY(llCommentInput);
                 Log.i("display", "itemBottomY = " + itemBottomY + "  input text y = " + y);
+                //最后一个 item 特殊处理，添加一个和输入框等高的 item，使 RecyclerView 有足够的空间滑动
                 if (position == adapter.data.size() - 1) {
                     adapter.data.add(new BottomBean());
-                    adapter.bottomHeight = y;
+                    adapter.bottomHeight = llCommentInput.getHeight();
                     adapter.notifyDataSetChanged();
                 }
                 //滑动 RecyclerView，是对应 item 底部和输入框顶部对齐
